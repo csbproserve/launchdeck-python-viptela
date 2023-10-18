@@ -158,6 +158,22 @@ class DeviceTemplates(object):
 
         return attached_devices
 
+    def get_template_exportcsv(self, template_id, is_edited=False, is_master_edited=False):
+        """Get the export CSV for a template.
+
+        Args:
+            template_id (string): Template ID
+
+        Returns:
+            result (dict): All data associated with a response.
+
+        """
+        payload = {"templateId": template_id, "isEdited": is_edited, "isMasterEdited": is_master_edited}
+        url = f"{self.base_url}template/device/config/exportcsv"
+        response = HttpMethods(self.session, url).request('POST', payload=json.dumps(payload))
+        if 'json' in response:
+            return response['json']
+
     def get_template_input(self, template_id, device_id_list=None):
         """Get the input associated with a device attachment.
 
