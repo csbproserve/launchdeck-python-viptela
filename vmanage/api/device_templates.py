@@ -172,7 +172,9 @@ class DeviceTemplates(object):
         url = f"{self.base_url}template/device/config/exportcsv"
         response = HttpMethods(self.session, url).request('POST', payload=json.dumps(payload))
         if 'json' in response:
-            return response['json']
+            if 'header' in response['json'] and 'columns' in response['json']['header']:
+                return_dict = {"columns": response["json"]["header"]["columns"], "templateVariableCount": response["json"]["header"]["templateVariableCount"]}
+                return return_dict
 
     def get_template_input(self, template_id, device_id_list=None):
         """Get the input associated with a device attachment.
