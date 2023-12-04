@@ -64,7 +64,7 @@ class Health(object):
         if health:
             query_string += f"health={health}" if query_string == "?" else f"&health={health}"
         url = self.base_url + api + query_string if query_string != "?" else self.base_url + api
-        response = HttpMethods(self.session).get(url)
+        response = HttpMethods(self.session, url).request('GET')
         result = ParseMethods.parse_response(response)
         return result
 
