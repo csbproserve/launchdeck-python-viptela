@@ -1086,7 +1086,7 @@ class MonitorNetwork(object):
             result (dict): All data associated with a response.
         """
 
-        url = f"{self.base_url}device/interface?af-type=ipv4&deviceId={system_ip}"
+        url = f"{self.base_url}device/interface?deviceId={system_ip}"
         if ifname:
             url += f"&if-name={ifname}"
         if vpn_id:
