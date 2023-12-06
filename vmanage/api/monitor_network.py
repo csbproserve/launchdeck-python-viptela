@@ -1076,6 +1076,25 @@ class MonitorNetwork(object):
         result = ParseMethods.parse_data(response)
         return result
 
+    def get_interface(self, system_ip, ifname=None, vpn_id=None):
+        """Provides interface information for device.
+
+        Args:
+            system_ip (str): Device System IP
+
+        Returns:
+            result (dict): All data associated with a response.
+        """
+
+        url = f"{self.base_url}device/interface?af-type=ipv4&deviceId={system_ip}"
+        if ifname:
+            url += f"&if-name={ifname}"
+        if vpn_id:
+            url += f"&vpn-id={vpn_id}"
+        response = HttpMethods(self.session, url).request('GET')
+        result = ParseMethods.parse_data(response)
+        return result
+        
     def get_interface_vpn(self, system_ip):
         """Provides interface vpn/vrf information for device.
 
