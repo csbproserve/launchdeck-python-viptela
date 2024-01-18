@@ -1109,6 +1109,41 @@ class MonitorNetwork(object):
         response = HttpMethods(self.session, url).request('GET')
         result = ParseMethods.parse_data(response)
         return result
+    
+    def get_interface_aggergate_stats(self, system_ip, ifnames):
+        """Provides aggergate interface stats for a device's interface.
+
+        # Args:
+        #     system_ip (str): Device System IP
+        #     ifnames (list): List of interface names
+
+        # Returns:
+        #     result (dict): All data associated with a response.
+        """
+
+        payload = {"query":{"condition":"AND","rules":[{"value":["12"],"field":"entry_time","type":"date","operator":"last_n_hours"},
+                                                       {"value":[system_ip],"field":"vdevice_name","type":"string","operator":"in"},
+                                                       {"value": ifnames,"field":"interface","type":"string","operator":"in"}]},
+                   "sort":[{"field":"entry_time","type":"date","order":"asc"}],
+                   "aggregation":{"field":[{"property":"interface","sequence":1}],
+                                  "histogram":{"property":"entry_time","type":"minute","interval":30,"order":"asc"},
+                                  "metrics":[{"property":"rx_kbps","type":"avg"},
+                                             {"property":"tx_kbps","type":"avg"},
+                                             {"property":"rx_pkts","type":"sum"},
+                                             {"property":"tx_pkts","type":"sum"},
+                                             {"property":"rx_octets","type":"sum"},
+                                             {"property":"tx_octets","type":"sum"},
+                                             {"property":"rx_errors","type":"sum"},
+                                             {"property":"tx_errors","type":"sum"},
+                                             {"property":"rx_drops","type":"sum"},
+                                             {"property":"tx_drops","type":"sum"},
+                                             {"property":"rx_pps","type":"avg"},
+                                             {"property":"tx_pps","type":"avg"}]}}
+
+        url = f"{self.base_url}/statistics/interface/aggregation"
+        response = HttpMethods(self.session, url).request('POST', payload=payload)
+        result = ParseMethods.parse_data(response)
+        return result
 
     def get_ip_fib(self, system_ip, **kwargs):
         """Provides IP FIB for device.
