@@ -1110,23 +1110,26 @@ class MonitorNetwork(object):
         result = ParseMethods.parse_data(response)
         return result
     
-    def get_interface_aggergate_stats(self, system_ip, ifnames):
+    def get_interface_aggergate_stats(self, system_ip, ifnames, interval, time_type, hours):
         """Provides aggergate interface stats for a device's interface.
 
         # Args:
         #     system_ip (str): Device System IP
         #     ifnames (list): List of interface names
+        #     interval (int): Interval in minutes
+        #     time_type (str): Time type (minutes, hours, days)
+        #     hours (str): Number of hours to go back
 
         # Returns:
         #     result (dict): All data associated with a response.
         """
 
-        payload = {"query":{"condition":"AND","rules":[{"value":["12"],"field":"entry_time","type":"date","operator":"last_n_hours"},
+        payload = {"query":{"condition":"AND","rules":[{"value":[hours],"field":"entry_time","type":"date","operator":"last_n_hours"},
                                                        {"value":[system_ip],"field":"vdevice_name","type":"string","operator":"in"},
                                                        {"value": ifnames,"field":"interface","type":"string","operator":"in"}]},
                    "sort":[{"field":"entry_time","type":"date","order":"asc"}],
                    "aggregation":{"field":[{"property":"interface","sequence":1}],
-                                  "histogram":{"property":"entry_time","type":"minute","interval":30,"order":"asc"},
+                                  "histogram":{"property":"entry_time","type":time_type,"interval":interval,"order":"asc"},
                                   "metrics":[{"property":"rx_kbps","type":"avg"},
                                              {"property":"tx_kbps","type":"avg"},
                                              {"property":"rx_pkts","type":"sum"},
