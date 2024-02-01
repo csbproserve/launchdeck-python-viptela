@@ -1143,7 +1143,7 @@ class MonitorNetwork(object):
                                              {"property":"rx_pps","type":"avg"},
                                              {"property":"tx_pps","type":"avg"}]}}
 
-        url = f"{self.base_url}/statistics/interface/aggregation"
+        url = f"{self.base_url}statistics/interface/aggregation"
         response = HttpMethods(self.session, url).request('POST', payload=payload)
         result = ParseMethods.parse_data(response)
         return result
