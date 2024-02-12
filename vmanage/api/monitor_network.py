@@ -5,6 +5,8 @@ from six.moves.urllib.parse import urlencode
 from vmanage.api.http_methods import HttpMethods
 from vmanage.data.parse_methods import ParseMethods
 
+import json
+
 
 class MonitorNetwork(object):
     """vManage Monitor Networks API
@@ -1144,7 +1146,7 @@ class MonitorNetwork(object):
                                              {"property":"tx_pps","type":"avg"}]}}
 
         url = f"{self.base_url}statistics/interface/aggregation"
-        response = HttpMethods(self.session, url).request('POST', payload=payload)
+        response = HttpMethods(self.session, url).request('POST', payload=json.dumps(payload))
         result = ParseMethods.parse_data(response)
         return result
 
